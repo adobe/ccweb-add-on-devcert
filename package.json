@@ -1,6 +1,6 @@
 {
     "name": "@adobe/ccweb-add-on-devcert",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "Generate trusted local SSL/TLS certificates for local SSL development",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
@@ -43,7 +43,7 @@
         "is-valid-domain": "^0.1.6",
         "lodash": "^4.17.4",
         "mkdirp": "^0.5.1",
-        "password-prompt": "^1.0.4",
+        "password-prompt": "^1.1.3",
         "rimraf": "^2.6.2",
         "sudo-prompt": "^8.2.0",
         "tmp": "^0.0.33",
