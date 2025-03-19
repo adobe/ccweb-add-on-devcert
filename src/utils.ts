@@ -65,7 +65,7 @@ export const numericHash = (str: string): number => {
   return hash >>> 0;
 };
 
-export function parseOpenSSLExpiryData(data: string) {
+export function parseOpenSSLExpiryData(data: string): number {
   if (data === '') {
     return -1;
   }
