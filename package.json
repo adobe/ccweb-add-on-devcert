@@ -29,7 +29,7 @@
         "@types/debug": "^0.0.30",
         "@types/get-port": "^3.2.0",
         "@types/glob": "^5.0.34",
-        "@types/lodash": "^4.14.92",
+        "@types/lodash": "^4.14.74",
         "@types/mkdirp": "^0.5.2",
         "@types/node": "^8.5.7",
         "@types/rimraf": "^2.0.2",
