@@ -94,14 +94,28 @@ export default class WindowsPlatform implements Platform {
     write(filepath, encryptedContents);
   }
 
-  private encrypt(text: string, key: string) {
-    let cipher = crypto.createCipher('aes256', new Buffer(key));
-    return cipher.update(text, 'utf8', 'hex') + cipher.final('hex');
-  }
+  private encrypt(text: string, key: string): string {
+    const algorithm = 'aes-256-cbc';
+    const iv = crypto.randomBytes(16);
+    const keyBuffer = crypto.createHash('sha256').update(key).digest();
 
-  private decrypt(encrypted: string, key: string) {
-    let decipher = crypto.createDecipher('aes256', new Buffer(key));
-    return decipher.update(encrypted, 'hex', 'utf8') + decipher.final('utf8');
-  }
+    const cipher = crypto.createCipheriv(algorithm, keyBuffer, iv);
+    const encrypted = Buffer.concat([cipher.update(text, 'utf8'), cipher.final()]);
 
+    return iv.toString('hex') + ':' + encrypted.toString('hex');
+  }
+  
+  private decrypt(encryptedText: string, key: string): string {
+    const algorithm = 'aes-256-cbc';
+    const keyBuffer = crypto.createHash('sha256').update(key).digest();
+
+    const [ivHex, encryptedHex] = encryptedText.split(':');
+    const iv = Buffer.from(ivHex, 'hex');
+    const encryptedBuffer = Buffer.from(encryptedHex, 'hex');
+
+    const decipher = crypto.createDecipheriv(algorithm, keyBuffer, iv);
+    const decrypted = Buffer.concat([decipher.update(encryptedBuffer), decipher.final()]);
+
+    return decrypted.toString('utf8');
+  }
 }
