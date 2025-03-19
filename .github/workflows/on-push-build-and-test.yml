@@ -1,10 +1,10 @@
-name: publish to npmjs
+name: build and test
 on:
-    push:
+    pull_request:
         branches: ["main"]
         paths: ["openssl-configurations/**/*", "src/**/*", "package.json"]
 jobs:
-    publish:
+    build-and-test:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3
@@ -21,10 +21,5 @@ jobs:
             - run: npm install
 
             - run: npm run build
-
+            
             - run: npm run test
-
-            - uses: JS-DevTools/npm-publish@v1
-              with:
-                  token: ${{ secrets.ADOBE_BOT_NPM_TOKEN }}
-                  access: "public"
