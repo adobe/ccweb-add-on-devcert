@@ -3,8 +3,8 @@ import createDebug from "debug";
 import { existsSync as exists, readFileSync as readFile, readdirSync as readdir } from "fs";
 import isValidDomain from "is-valid-domain";
 import rimraf from "rimraf";
-import installCertificateAuthority, { ensureCACertReadable, uninstall, caExpiryInDays } from "./certificate-authority";
-import { generateDomainCertificate, revokeDomainCertificate, certificateExpiryInDays } from "./certificates";
+import installCertificateAuthority, { ensureCACertReadable, uninstall } from "./certificate-authority";
+import { generateDomainCertificate, revokeDomainCertificate } from "./certificates";
 import {
     configDir,
     domainsDir,
@@ -18,8 +18,7 @@ import {
 } from "./constants";
 import currentPlatform from "./platforms";
 import UI, { UserInterface } from "./user-interface";
-
-export { caExpiryInDays, certificateExpiryInDays, configDir, uninstall };
+import { openssl, parseOpenSSLExpiryData } from './utils';
 
 const debug = createDebug("devcert");
 
@@ -151,10 +150,39 @@ export function configuredDomains() {
     return readdir(domainsDir);
 }
 
+export function location(): string {
+    return configDir;
+}
+
 export async function removeDomain(requestedDomains: string | string[]) {
     const domains = Array.isArray(requestedDomains) ? requestedDomains : [requestedDomains];
     await revokeDomainCertificate(domains);
 
     const domainPath = getStableDomainPath(domains);
     return rimraf.sync(pathForDomain(domainPath));
+}
+
+export function removeAll(): void {
+    uninstall();
+}
+
+export function caExpiryInDays(): number {
+    try {
+        const caExpiryData = openssl(['x509', '-in', rootCACertPath, '-noout', '-enddate' ]).toString().trim();
+        return parseOpenSSLExpiryData(caExpiryData);
+    } catch {
+        return -1;
+    }
+}
+
+export function certificateExpiryInDays(domain: string): number {
+    const domainPath = getStableDomainPath([domain]);
+    let domainCertPath = pathForDomain(domainPath, 'certificate.crt');
+
+    try {
+        const certExpiryData = openssl(['x509', '-in', domainCertPath, '-noout', '-enddate' ]).toString().trim();
+        return parseOpenSSLExpiryData(certExpiryData);
+    } catch {
+        return -1;
+    }
 }
