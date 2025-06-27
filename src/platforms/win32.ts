@@ -1,12 +1,12 @@
-import crypto from 'crypto';
 import createDebug from 'debug';
-import { existsSync as exists, readFileSync as read, writeFileSync as write } from 'fs';
+import crypto from 'crypto';
+import { existsSync as exists, writeFileSync as write, readFileSync as read } from 'fs';
 import { sync as rimraf } from 'rimraf';
-import { Platform } from '.';
 import { Options } from '../index';
-import UI from '../user-interface';
-import { run, sudo } from '../utils';
 import { assertNotTouchingFiles, openCertificateInFirefox } from './shared';
+import { Platform } from '.';
+import { run, sudo } from '../utils';
+import UI from '../user-interface';
 
 const debug = createDebug('devcert:platforms:windows');
 
