@@ -57,7 +57,7 @@ export default class WindowsPlatform implements Platform {
 
   async addDomainToHostFileIfMissing(domain: string) {
     if (!exists(this.HOST_FILE_PATH)) {
-      console.warn(`Could not verify ${domain} entry in the host file.`);
+      console.warn('Could not locate the host file in your system.');
       console.warn('Please ensure to have:');
       console.log(`127.0.0.1  ${domain}`);
       console.warn("entry in your system's host file.");
