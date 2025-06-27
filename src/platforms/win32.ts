@@ -1,12 +1,12 @@
-import createDebug from 'debug';
 import crypto from 'crypto';
-import { writeFileSync as write, readFileSync as read } from 'fs';
+import createDebug from 'debug';
+import { existsSync as exists, readFileSync as read, writeFileSync as write } from 'fs';
 import { sync as rimraf } from 'rimraf';
-import { Options } from '../index';
-import { assertNotTouchingFiles, openCertificateInFirefox } from './shared';
 import { Platform } from '.';
-import { run, sudo } from '../utils';
+import { Options } from '../index';
 import UI from '../user-interface';
+import { run, sudo } from '../utils';
+import { assertNotTouchingFiles, openCertificateInFirefox } from './shared';
 
 const debug = createDebug('devcert:platforms:windows');
 
@@ -56,6 +56,14 @@ export default class WindowsPlatform implements Platform {
   }
 
   async addDomainToHostFileIfMissing(domain: string) {
+    if (!exists(this.HOST_FILE_PATH)) {
+      console.warn(`Could not verify ${domain} entry in the host file.`);
+      console.warn('Please ensure to have:');
+      console.log(`127.0.0.1  ${domain}`);
+      console.warn("entry in your system's host file.");
+      return;
+    }
+
     let hostsFileContents = read(this.HOST_FILE_PATH, 'utf8');
     if (!hostsFileContents.includes(domain)) {
       await sudo(`echo 127.0.0.1  ${ domain } >> ${ this.HOST_FILE_PATH }`);
