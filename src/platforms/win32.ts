@@ -1,6 +1,6 @@
 import createDebug from 'debug';
 import crypto from 'crypto';
-import { writeFileSync as write, readFileSync as read } from 'fs';
+import { existsSync as exists, writeFileSync as write, readFileSync as read } from 'fs';
 import { sync as rimraf } from 'rimraf';
 import { Options } from '../index';
 import { assertNotTouchingFiles, openCertificateInFirefox } from './shared';
@@ -56,6 +56,14 @@ export default class WindowsPlatform implements Platform {
   }
 
   async addDomainToHostFileIfMissing(domain: string) {
+    if (!exists(this.HOST_FILE_PATH)) {
+      console.warn('Could not locate the host file in your system.');
+      console.warn('Please ensure to have:');
+      console.log(`127.0.0.1  ${domain}`);
+      console.warn("entry in your system's host file.");
+      return;
+    }
+
     let hostsFileContents = read(this.HOST_FILE_PATH, 'utf8');
     if (!hostsFileContents.includes(domain)) {
       await sudo(`echo 127.0.0.1  ${ domain } >> ${ this.HOST_FILE_PATH }`);
