@@ -6,7 +6,7 @@
 # devcert - Development SSL made easy
 
 So, running a local HTTPS server usually sucks. There's a range of
-approaches, each with their own tradeoff. The common one, using self-signed
+approaches, each with its own tradeoff. The common one, using self-signed
 certificates, means having to ignore scary browser warnings for each project.
 
 devcert makes the process easy. Want a private key and certificate file to
@@ -35,15 +35,15 @@ return object itself, so that these programs can choose whether to trust it.
 
 ### getCaPath
 
-Set this option to `true` and the returned object will inlude a `caPath`
+Set this option to `true` and the returned object will include a `caPath`
 property, set to the file path of the certificate authority file. Use this
-path to add the certificate to local trust stores which accept paths as
-arguments, such as NodeJS's builtin environment variable
+path to add the certificate to local trust stores, which accept paths as
+arguments, such as NodeJS's built-in environment variable
 `NODE_EXTRA_CA_CERTS`..
 
 ### getCaBuffer
 
-Set this option to `true` and the returned object will inlude a `ca`
+Set this option to `true` and the returned object will include a `ca`
 property, set to the UTF-8-encoded contents of the certificate authority
 file. Use this path to add the certificate to local trust stores which don't
 use OS settings, lke the examples mentioned above.
@@ -71,12 +71,12 @@ local machine (since the SSL certificate won't say `localhost`).
 
 This option will tell devcert to avoid installing `certutil` tooling.
 
-`certutil` is a tooling package used to automated the installation of SSL
+`certutil` is a tooling package used to automate the installation of SSL
 certificates in certain circumstances; specifically, Firefox (for every OS)
 and Chrome (on Linux only).
 
-Normally, devcert will attempt to install `certutil` if it's need and not
-already present on your system. If don't want devcert to install this
+Normally, devcert will attempt to install `certutil` if it's needed and not
+already present on your system. If you don't want devcert to install this
 package, pass `skipCertutil: true`.
 
 If you decide to `skipCertutil`, the initial setup process for devcert
@@ -133,7 +133,7 @@ The general script would look something like:
 const fs = require("fs");
 const devcert = require("devcert");
 
-// or if its just one domain - devcert.certificateFor('local.example.com')
+// or if it's just one domain - devcert.certificateFor('local.example.com')
 devcert
     .certificateFor(["localhost", "local.api.example.com", "local.example.com", "local.auth.example.com"])
     .then(({ key, cert }) => {
@@ -210,7 +210,7 @@ the new root CA.
 Since your machine now trusts this root CA, it will trust any certificates
 signed by it. So when you ask for a certificate for a new domain, devcert
 will use the root CA credentials to generate a certificate specific to the
-domain you requested, and returns the new certificate to you.
+domain you requested, and return the new certificate to you.
 
 If you request a domain that has already had certificates generated for it,
 devcert will simply return the cached certificates.
@@ -222,7 +222,7 @@ certificates.
 ## Security Concerns
 
 There's a reason that your OS prompts you for your root password when devcert
-attempts to install it's root certificate authority. By adding it to your
+attempts to install its root certificate authority. By adding it to your
 machine's trust stores, your browsers will automatically trust _any_ certificate
 generated with it.
 
@@ -242,7 +242,7 @@ without you knowing. The exact approach varies by platform:
 -   **Windows**: because of my unfamiliarity with Windows file permissions, I
     wasn't confident I would be able to correctly set permissions to mimic the setup
     on macOS and Linux. So instead, devcert will prompt you for a password, and then
-    use that to encrypt the credentials with an AES256 cipher. The password is never
+    use that to encrypt the credentials with an AES256 cypher. The password is never
     written to disk.
 
 To further protect these credentials, any time they are written to disk, they
@@ -279,7 +279,7 @@ With that in mind, if you'd like to use devcert in your library/framework/CLI,
 devcert makes that easy.
 
 In addition to the options above, devcert exposes a `ui` option. This option
-allows you to control all the points where devcert requries user interaction,
+allows you to control all the points where devcert requires user interaction,
 substituting your own prompts and user interface. You can use this to brand
 the experience with your own tool's name, localize the messages, or integrate
 devcert into a larger existing workflow.
@@ -300,7 +300,7 @@ The `ui` option should be an object with the following methods:
   },
   async closeFirefoxBeforeContinuing() {
     // Invoked when devcert detects that Firefox is running while it is trying
-    // to programmatically install it's certificate authority in the Firefox
+    // to programmatically install its certificate authority in the Firefox
     // trust store. Firefox appears to overwrite changes to the trust store on
     // exit, so Firefox must be closed before devcert can continue. devcert will
     // wait for Firefox to exit - this is just to prompt the user that they
@@ -309,7 +309,7 @@ The `ui` option should be an object with the following methods:
   async startFirefoxWizard(certificateHost: string) {
     // Invoked when devcert detects a Firefox installation and `skipCertutil:
     // true` was specified. This is invoked right before devcert launches the
-    // Firefox certificate import wizard GUI. Used to give the user a heads up
+    // Firefox certificate import wizard GUI. Used to give the user a heads-up
     // as to why they are about to see Firefox pop up.
     //
     // The certificateHost provided is the URL for the temporary server that
@@ -328,10 +328,10 @@ The `ui` option should be an object with the following methods:
     // to the actual certificate. The Firefox tab must attempt to load this URL
     // to trigger the wizard.
     //
-    // The default implemenation is a simple redirect to that URL. But you could
+    // The default implementation is a simple redirect to that URL. But you could
     // supply your own branded template here, with a button that says "Install
     // certificate" that is linked to the certificateURL, along with a more in
-    // depth explanation of what is happening for example.
+    // depth explanation of what is happening, for example.
   }
   async waitForFirefoxWizard() {
     // Invoked _after_ the Firefox certificate import wizard is kicked off. This
@@ -343,12 +343,12 @@ The `ui` option should be an object with the following methods:
 ```
 
 You can supply any or all of these methods - ones you do not supply will fall
-back to the default implemenation.
+back to the default implementation.
 
 ## Testing
 
 Testing a tool like devcert can be a pain. I haven't found a good automated
-solution for cross platform GUI testing (the GUI part is necessary to test
+solution for cross-platform GUI testing (the GUI part is necessary to test
 each browser's handling of devcert certificates, as well as test the Firefox
 wizard flow).
 
